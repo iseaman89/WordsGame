@@ -1,0 +1,29 @@
+﻿version: "3.9"
+services:
+  db:
+    image: postgres:15
+    container_name: wordsgame_db
+    restart: always
+    environment:
+      POSTGRES_USER: wordsgame_user
+      POSTGRES_PASSWORD: secret123
+      POSTGRES_DB: wordsgame_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  wordsgame:
+    build:
+      context: .
+      dockerfile: WordsGame/Dockerfile
+    depends_on:
+      - db
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=WordsDb;Username=iseaman;Password=kin4aka"
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres-data:
